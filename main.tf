@@ -44,6 +44,19 @@ resource "azurerm_subnet" "web_server_subnet" {
 }
 
 
+
+resource "azurerm_public_ip" "web_server_public_ip" {
+
+    name = "${var.web_server_name}-public-ip"
+    location = "${var.web_server_location}"
+    resource_group_name = "${azurerm_resource_group.web_server_rg.name}"
+    allocation_method = "Dynamic"
+    #public_ip_address_id = "${azurerm_public_ip.web_server_public_ip.name}"
+    tags = {
+        environment = "Production"
+    }
+ 
+}
 resource "azurerm_network_interface" "wev_server_nic" {
     name                 = "${var.web_server_name}-nic"
     location             = "${var.web_server_location}"
@@ -52,35 +65,39 @@ resource "azurerm_network_interface" "wev_server_nic" {
         name             = "${var.web_server_name}-ip"
         subnet_id        = "${azurerm_subnet.web_server_subnet.id}"
         private_ip_address_allocation = "dynamic"
+        public_ip_address_id = "${azurerm_public_ip.web_server_public_ip.id}"
     }
   
 }
 
-resource "azurerm_kubernetes_cluster" "web_server_rg" {
-    name = "prod"
-    location = "${var.web_server_location}"
+
+
+
+#resource "azurerm_kubernetes_cluster" "web_server_rg" {
+   # name = "prod"
+    #location = "${var.web_server_location}"
     
-    resource_group_name = "${azurerm_resource_group.web_server_rg.name}"
-    dns_prefix = "prod-dns"
+    #resource_group_name = "${azurerm_resource_group.web_server_rg.name}"
+    #dns_prefix = "prod-dns"
 
-    agent_pool_profile {
+    #agent_pool_profile {
 
-        name = "default"
-        count = 1
-        vm_size = "Standard_DS2_v2"
-        os_type = "Linux"
-        os_disk_size_gb = 30
-    }
-    service_principal {
-        client_id = "${var.client_id}"
-        client_secret = "${var.client_secret}"
-    }
-    tags = {
-        Environment = "Production"
-    }
+     #   name = "default"
+      #  count = 1
+      #  vm_size = "Standard_DS2_v2"
+        #os_type = "Linux"
+       # os_disk_size_gb = 30
+   # }
+   # service_principal {
+   #     client_id = "${var.client_id}"
+    #    client_secret = "${var.client_secret}"
+   # }
+   # tags = {
+    #    Environment = "Production"
+   # }
 
   
-}
+#}
 
 
 
