@@ -11,8 +11,10 @@ trigger:
    exclude:
      - terra/*
 
+#vmImageName: 'inhouse'
+
 pool:
-  vmImage: 'inhouse'
+  name: 'inhouse'
 
 steps:
 - script: echo Hello, world!
