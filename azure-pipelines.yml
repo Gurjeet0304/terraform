@@ -4,10 +4,15 @@
 # https://aka.ms/yaml
 
 trigger:
-- master
+ branches:
+   include:
+     - master
+ paths:
+   exclude:
+     - terra/*
 
 pool:
-  vmImage: 'ubuntu-latest'
+  vmImage: 'inhouse'
 
 steps:
 - script: echo Hello, world!
@@ -17,3 +22,22 @@ steps:
     echo Add other tasks to build, test, and deploy your project.
     echo See https://aka.ms/yaml
   displayName: 'Run a multi-line script'
+
+- task: Bash@3
+  inputs:
+    targetType: 'inline'
+    script: |
+      git cone git@github.com:Gurjeet0304/terraform.git
+      git config --global user.email "gurjeetsahi@gmail.com"
+      git config --global user.name "Gurjeet0304"
+      cd terraform/terra
+- task: CopyFiles@2
+  inputs:
+    Contents: 'terra/*'
+    TargetFolder: '$(Build.ArtifactStagingDirectory)'
+
+- task: PublishBuildArtifacts@1
+  inputs:
+    PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+    ArtifactName: 'drop'
+    publishLocation: 'Container'
