@@ -1,0 +1,45 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+trigger:
+ branches:
+   include:
+     - master
+ paths:
+   exclude:
+     - terra/*
+
+#vmImageName: 'inhouse'
+
+pool:
+  name: 'inhouse'
+
+steps:
+- script: echo Hello, world!
+  displayName: 'Run a one-line script'
+
+- script: |
+    echo Add other tasks to build, test, and deploy your project.
+    echo See https://aka.ms/yaml
+  displayName: 'Run a multi-line script'
+
+- task: Bash@3
+  inputs:
+    targetType: 'inline'
+    script: |
+      git clone git@github.com:Gurjeet0304/terraform.git
+      git config --global user.email "gurjeetsahi@gmail.com"
+      git config --global user.name "Gurjeet0304"
+      cd terraform/terra
+- task: CopyFiles@2
+  inputs:
+    Contents: 'terra/*'
+    TargetFolder: '$(Build.ArtifactStagingDirectory)'
+
+- task: PublishBuildArtifacts@1
+  inputs:
+    PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+    ArtifactName: 'drop'
+    publishLocation: 'Container'
