@@ -9,6 +9,7 @@ variable "web_server_address_space" {}
 variable "web_server_address_prefix" {}
 variable "web_server_name" {}
 
+
 provider "azurerm" {
     version          = "1.28.0"
     client_id        = "${var.client_id}"
